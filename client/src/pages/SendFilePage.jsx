@@ -4,7 +4,7 @@ import { AppShell, ErrorBanner } from '../components/AppShell';
 import { useAuth } from '../context/AuthContext';
 import { useTransfer } from '../context/TransferContext';
 import { api } from '../lib/api';
-import { encryptFile, generateAccessCode, sha256Hex } from '../lib/crypto';
+import { encryptFile, generateAccessCode, normalizeAccessCode, sha256Hex } from '../lib/crypto';
 import { formatExpiresAt, formatFileSize, futureIsoFromMinutes } from '../lib/format';
 
 const DURATIONS = [
@@ -93,7 +93,7 @@ export default function SendFilePage() {
       form.append('originalFilename', selectedFile.name);
       form.append('mimeType', selectedFile.type || 'application/octet-stream');
       form.append('fileSize', String(selectedFile.size));
-      form.append('accessCodeHash', await sha256Hex(accessCode));
+      form.append('accessCodeHash', await sha256Hex(normalizeAccessCode(accessCode)));
       form.append('durationMinutes', String(durationMinutes));
       form.append('fileKey', encrypted.fileKeyB64);
 

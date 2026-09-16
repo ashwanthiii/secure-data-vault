@@ -18,7 +18,17 @@ export async function sha256Hex(value) {
 export function generateAccessCode() {
   const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const values = crypto.getRandomValues(new Uint8Array(8));
-  return Array.from(values, (value) => alphabet[value % alphabet.length]).join('');
+  const code = Array.from(values, (value) => alphabet[value % alphabet.length]).join('');
+  return formatAccessCode(code);
+}
+
+export function normalizeAccessCode(value) {
+  return String(value || '').replace(/[^a-z0-9]/gi, '').toUpperCase().slice(0, 8);
+}
+
+export function formatAccessCode(value) {
+  const normalized = normalizeAccessCode(value);
+  return normalized.length > 4 ? `${normalized.slice(0, 4)}-${normalized.slice(4)}` : normalized;
 }
 
 export async function encryptFile(file) {

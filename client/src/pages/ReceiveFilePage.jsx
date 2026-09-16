@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { AppShell, ErrorBanner } from '../components/AppShell';
 import { useAuth } from '../context/AuthContext';
 import { api, downloadProtectedFile } from '../lib/api';
-import { decryptFile, sha256Hex } from '../lib/crypto';
+import { decryptFile, normalizeAccessCode, formatAccessCode, sha256Hex } from '../lib/crypto';
 import { formatExpiresAt, formatFileSize } from '../lib/format';
 
 const VIEWABLE = new Set(['application/pdf', 'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'text/plain']);
@@ -31,7 +31,7 @@ export default function ReceiveFilePage() {
     try {
       const data = await api('/files/access-code', {
         method: 'POST',
-        body: JSON.stringify({ accessCodeHash: await sha256Hex(accessCode.trim().toUpperCase()) }),
+        body: JSON.stringify({ accessCodeHash: await sha256Hex(normalizeAccessCode(accessCode)) }),
       });
       setMeta(data.file);
       setGuestAccessToken(data.guestAccessToken || '');
@@ -101,10 +101,10 @@ export default function ReceiveFilePage() {
               <div className="flex flex-col sm:flex-row items-stretch gap-space-sm">
                 <input
                   className="flex-1 px-4 py-3.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md shadow-sm focus:bg-surface-container-lowest focus:outline-none transition-all"
-                  maxLength="8"
-                  placeholder="Enter the 8-character access code"
+                  maxLength="9"
+                  placeholder="Enter code, for example ABCD-2345"
                   value={accessCode}
-                  onChange={(event) => setAccessCode(event.target.value.replace(/[^a-z0-9]/gi, '').toUpperCase())}
+                  onChange={(event) => setAccessCode(formatAccessCode(event.target.value))}
                 />
                 <button
                   className="px-6 py-3.5 rounded-lg bg-primary text-on-primary font-body-md text-body-md font-semibold hover:bg-primary-container shadow-sm active:scale-[0.99] transition-all inline-flex items-center justify-center gap-2 flex-shrink-0 disabled:opacity-70"
