@@ -1,4 +1,10 @@
-const API = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '') || '/api';
+function resolveApiBase() {
+  const configured = (import.meta.env.VITE_API_URL || '').trim();
+  if (configured) return configured.replace(/\/$/, '');
+  return '/api';
+}
+
+const API = resolveApiBase();
 
 async function parseBody(res) {
   const text = await res.text();

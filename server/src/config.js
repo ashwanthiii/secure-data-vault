@@ -10,6 +10,20 @@ function required(name) {
   return value;
 }
 
+function parseOrigins(value) {
+  const origins = new Set();
+  const raw = value || '';
+  for (const item of raw.split(',')) {
+    const trimmed = item.trim();
+    if (trimmed) origins.add(trimmed.replace(/\/$/, ''));
+  }
+  if (origins.size === 0) {
+    origins.add('http://localhost:5173');
+    origins.add('http://127.0.0.1:5173');
+  }
+  return [...origins];
+}
+
 const keyWrapSecret = required('KEY_WRAP_SECRET');
 if (!/^[0-9a-fA-F]{64}$/.test(keyWrapSecret)) {
   throw new Error('KEY_WRAP_SECRET must be 64 hex characters (32 bytes)');
@@ -17,7 +31,8 @@ if (!/^[0-9a-fA-F]{64}$/.test(keyWrapSecret)) {
 
 module.exports = {
   port: Number(process.env.PORT || 4000),
-  clientOrigin: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+  clientOrigins: parseOrigins(process.env.CLIENT_ORIGIN || process.env.CLIENT_ORIGINS),
+  clientOrigin: (process.env.CLIENT_ORIGIN || 'http://localhost:5173').replace(/\/$/, ''),
   db: {
     host: process.env.DB_HOST || 'localhost',
     port: Number(process.env.DB_PORT || 3306),

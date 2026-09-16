@@ -18,13 +18,22 @@ fs.writeFileSync(path.join(config.uploadDir, '.gitkeep'), '');
 
 const app = express();
 
+const allowedOrigins = new Set(config.clientOrigins);
+const defaultOrigin = config.clientOrigin;
+
 app.disable('x-powered-by');
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   contentSecurityPolicy: false,
 }));
 app.use(cors({
-  origin: config.clientOrigin,
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.has(origin) || origin === defaultOrigin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+      callback(null, true);
+      return;
+    }
+    callback(new Error('CORS policy: origin not allowed'));
+  },
   credentials: true,
 }));
 app.use(cookieParser());
