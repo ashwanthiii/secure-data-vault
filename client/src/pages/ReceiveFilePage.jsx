@@ -101,8 +101,8 @@ export default function ReceiveFilePage() {
               <div className="flex flex-col sm:flex-row items-stretch gap-space-sm">
                 <input
                   className="flex-1 px-4 py-3.5 rounded-lg bg-surface-container-low text-on-surface font-body-md text-body-md shadow-sm focus:bg-surface-container-lowest focus:outline-none transition-all"
-                  maxLength="9"
-                  placeholder="Enter code, for example ABCD-2345"
+                  maxLength="24"
+                  placeholder="Enter code, for example SUNSET-ORBIT"
                   value={accessCode}
                   onChange={(event) => setAccessCode(formatAccessCode(event.target.value))}
                 />

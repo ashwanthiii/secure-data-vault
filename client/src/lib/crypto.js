@@ -15,20 +15,37 @@ export async function sha256Hex(value) {
   return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
+const WORDS = [
+  'AMBER', 'BREEZE', 'CLOUD', 'DAWN', 'EMBER', 'FABLE', 'GARDEN', 'HARBOR', 'IVY', 'JASPER',
+  'KITE', 'LANTERN', 'MAPLE', 'NORTH', 'ORBIT', 'PEARL', 'QUARTZ', 'RIVER', 'SUNSET', 'TIDE',
+  'UNITY', 'VALLEY', 'WAVES', 'YONDER', 'ZEST', 'BLOSSOM', 'CANYON', 'DELTA', 'ECHO', 'FROST',
+  'GLOW', 'HONEY', 'ISLAND', 'JOURNEY', 'KELP', 'LILAC', 'MEADOW', 'NOVA', 'OAK', 'PINE',
+  'QUEST', 'RAVEN', 'STONE', 'THRIVE', 'URBAN', 'VELVET', 'WILLOW', 'XENON', 'YELLOW', 'ZEAL'
+];
+
 export function generateAccessCode() {
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const values = crypto.getRandomValues(new Uint8Array(8));
-  const code = Array.from(values, (value) => alphabet[value % alphabet.length]).join('');
+  const first = WORDS[Math.floor(Math.random() * WORDS.length)];
+  const second = WORDS[Math.floor(Math.random() * WORDS.length)];
+  const code = `${first}-${second}`;
   return formatAccessCode(code);
 }
 
 export function normalizeAccessCode(value) {
-  return String(value || '').replace(/[^a-z0-9]/gi, '').toUpperCase().slice(0, 8);
+  const normalized = String(value || '')
+    .replace(/[^a-z0-9]+/gi, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .join('-')
+    .toUpperCase();
+
+  return normalized.slice(0, 24);
 }
 
 export function formatAccessCode(value) {
   const normalized = normalizeAccessCode(value);
-  return normalized.length > 4 ? `${normalized.slice(0, 4)}-${normalized.slice(4)}` : normalized;
+  if (!normalized) return '';
+  return normalized.split('-').filter(Boolean).slice(0, 2).join('-');
 }
 
 export async function encryptFile(file) {

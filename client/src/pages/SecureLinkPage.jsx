@@ -54,8 +54,8 @@ export default function SecureLinkPage() {
             </div>
             <div className="rounded-lg bg-surface-container-low border border-outline-variant/30 p-space-md">
                 <p className="font-body-md text-body-md font-medium text-on-surface">Receiver access code</p>
-                <p className="mt-1 font-headline-lg text-headline-lg font-bold tracking-[0.25em] text-primary">{lastShare.accessCode}</p>
-                <p className="mt-1 font-body-sm text-body-sm text-on-surface-variant">Share this code privately. No receiver account or link is required.</p>
+                <p className="mt-1 font-headline-lg text-headline-lg font-bold text-primary tracking-[0.12em]">{lastShare.accessCode}</p>
+                <p className="mt-1 font-body-sm text-body-sm text-on-surface-variant">Share this easy-to-read code privately. No receiver account or link is required.</p>
             </div>
             <div className="flex items-center gap-space-sm p-space-sm px-space-md rounded-lg bg-surface-container-low text-on-surface-variant">
               <span className="material-symbols-outlined text-[18px] text-secondary shrink-0">info</span>
