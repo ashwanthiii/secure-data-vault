@@ -1,0 +1,11 @@
+{
+  "name": "secure-file-transfer",
+  "private": true,
+  "description": "Simple secure file transfer for everyday users",
+  "scripts": {
+    "setup": "npm install --prefix server && npm install --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "db:init": "npm run db:init --prefix server"
+  }
+}
